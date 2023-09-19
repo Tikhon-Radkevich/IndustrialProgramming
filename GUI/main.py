@@ -49,12 +49,9 @@ class RootWin:
         self.root.mainloop()
 
     def open_file_dialog(self):
-        # todo
         file_path = filedialog.askopenfilename(title="Select a File")
-
-        custom_lib_state = self.custom_lib_var.get()
         if file_path:
-            f_process = FileProcess(file_path)
+            f_process = FileProcess(file_path, use_custom_lib=bool(self.custom_lib_var.get()))
             expressions = f_process.decode()
 
             # Calculate and append description for each Expression to the Text widget

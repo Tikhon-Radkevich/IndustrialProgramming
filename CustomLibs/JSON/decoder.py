@@ -1,11 +1,12 @@
 class CustomJsonDecode:
     """ Custom JSON decoder to decode a JSON string into a Python dictionary. """
 
-    def __init__(self, json_str):
-        self.json_str = json_str
+    def __init__(self):
+        self.json_str = None
         self._idx = 0
 
-    def decode(self):
+    def __call__(self, json_str):
+        self.json_str = json_str
         return self._parse_object()
 
     def _parse_object(self):
