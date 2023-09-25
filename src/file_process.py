@@ -9,8 +9,8 @@ from src.expression import Expression
 
 class FileProcess:
     TYPE_TO_DECODER = {
-        "json": {"standard": loads, "custom": CustomJsonDecode},
-        "xml": {"standard": parse, "custom": CustomXMLDecode},
+        "json": {"standard": loads, "custom": CustomJsonDecode()},
+        "xml": {"standard": parse, "custom": CustomXMLDecode()},
     }
 
     def __init__(self, file_path: str, use_custom_lib=False):
@@ -28,7 +28,7 @@ class FileProcess:
             data = f.read()
 
         if self._use_custom_lib:
-            file_decoder = self.TYPE_TO_DECODER[file_type]["custom"]()
+            file_decoder = self.TYPE_TO_DECODER[file_type]["custom"]
         else:
             file_decoder = self.TYPE_TO_DECODER[file_type]["standard"]
 
