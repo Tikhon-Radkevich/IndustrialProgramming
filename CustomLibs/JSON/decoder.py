@@ -7,6 +7,7 @@ class CustomJsonDecode:
 
     def __call__(self, json_str):
         self.json_str = json_str
+        self._idx = 0
         return self._parse_object()
 
     def _parse_object(self):

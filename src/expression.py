@@ -23,3 +23,13 @@ class Expression:
         description += f"Converted Expression: {self.converted_expression}\n"
         description += f"Result: {self.result}\n"
         return description
+
+    def get_dict(self) -> dict:
+        data = {
+            self.title: {
+                "expression": self.converted_expression,
+                "args": self.args,
+                "result": self.result
+            }
+        }
+        return data

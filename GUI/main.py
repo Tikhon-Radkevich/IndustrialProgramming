@@ -1,7 +1,9 @@
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, simpledialog
 import tkinter as tk
 
 from src.file_process import FileProcess
+from src.file_crypt import encrypt_and_get_key, decrypt
+from GUI.save_file_process import FormatChoiceDialog, OptionalParamChoiceDialog
 
 
 class RootWin:
@@ -29,6 +31,7 @@ class RootWin:
         # buttons
         self.info_button = None
         self.open_button = None
+        self.save_button = None
         self.custom_lib_checkbutton = None
         self.custom_lib_var = tk.IntVar()
         self._button_initialization()
@@ -43,24 +46,82 @@ class RootWin:
 
         # Configure the Text widget to work with the scrollbar
         self.description_text.config(yscrollcommand=self.scrollbar.set)
+        self.expressions_data: dict = {"Expressions": {}}
 
     def run(self):
         """ Start the main event loop """
         self.root.mainloop()
 
     def open_file_dialog(self):
+        self.description_text.delete("1.0", tk.END)
         file_path = filedialog.askopenfilename(title="Select a File")
         if file_path:
             f_process = FileProcess(file_path, use_custom_lib=bool(self.custom_lib_var.get()))
             expressions = f_process.decode()
+            self.expressions_data["Expressions"].clear()
 
             # Calculate and append description for each Expression to the Text widget
             for ex in expressions:
                 ex.calculate()  # Calculate the result
                 description = ex.get_description()  # Get the description
                 self.description_text.insert(tk.END, description + "\n\n")  # Append to the Text widget
+                ex_dict_data = ex.get_dict()
+                for key, data in ex_dict_data.items():
+                    self.expressions_data["Expressions"][key] = data
 
-            print("Selected file:", file_path)
+            print(self.expressions_data)
+
+            # print("Selected file:", file_path)
+
+    def save_file_dialog(self):
+
+        format_choice_dialog = FormatChoiceDialog(self.root)
+        self.root.wait_window(format_choice_dialog.dialog)
+        format_choice = format_choice_dialog.result
+
+        option_choice_dialog = OptionalParamChoiceDialog(self.root)
+        self.root.wait_window(option_choice_dialog.dialog)
+        options = option_choice_dialog.result
+        if len(options) == 0:
+            options = []
+        else:
+            options = options.split("-") if "-" in options else [options]
+
+        file_path = filedialog.asksaveasfilename(title="Save File", defaultextension="")
+        file_path += format_choice
+
+
+        print(file_path)
+
+
+        print(format_choice)
+        print(options)
+        return
+
+        file_path = filedialog.asksaveasfilename(title="Save File", defaultextension="")
+        if file_path:
+            format_choice = simpledialog.askstring("File Format", "Choose file format (json or xml):", parent=self.root)
+            if format_choice and format_choice.lower() in ["json", "xml"]:
+                format_choice = format_choice.lower()
+                options = simpledialog.askstring("Options", "Choose options (comma-separated):", parent=self.root)
+                if options:
+                    options_list = options.split(",")
+                    if "zip" in options_list:
+                        # Implement ZIP functionality here
+                        pass
+                    if "encrypt" in options_list:
+                        # Implement encryption functionality here
+                        pass
+                    # Save the file with chosen format and options
+                    with open(file_path, "w") as file:
+                        file.write(f"Format: {format_choice}\n")
+                        file.write(f"Options: {', '.join(options_list)}\n")
+                        file.write(self.description_text.get("1.0", tk.END))
+                    messagebox.showinfo("File Saved", "File saved successfully.")
+                else:
+                    messagebox.showwarning("Options", "No options selected.")
+            else:
+                messagebox.showwarning("File Format", "Invalid file format choice.")
 
     def show_project_info(self):
         messagebox.showinfo("Project Information", self.info_text)
@@ -74,17 +135,23 @@ class RootWin:
         self.root.configure(bg=self.background_color)  # Set the background color
 
     def _button_initialization(self):
-        # Create an "Info" button in the top-right corner
-        self.info_button = tk.Button(self.root, text="Info", command=self.show_project_info, bg=self.button_bg, fg=self.button_fg)
-        self.info_button.pack(anchor="ne", padx=10, pady=10)
 
-        # Create a button to open the file dialog
-        self.open_button = tk.Button(self.root, text="Open File", command=self.open_file_dialog, bg=self.button_bg, fg=self.button_fg)
-        self.open_button.pack(padx=20, pady=20)
+        self.info_button = tk.Button(self.root, text="Info", command=self.show_project_info, bg=self.button_bg,fg=self.button_fg)
+        self.info_button.pack(padx=10, pady=5, anchor="ne")
+
+        # Create a frame for the buttons
+        button_frame = tk.Frame(self.root)
+        button_frame.pack(padx=0, pady=10)
+
+        self.open_button = tk.Button(button_frame, text="Open File", command=self.open_file_dialog, bg=self.button_bg, fg=self.button_fg)
+        self.open_button.pack(side=tk.LEFT, padx=0, pady=0)
+
+        self.save_button = tk.Button(button_frame, text="Save", command=self.save_file_dialog, bg=self.button_bg, fg=self.button_fg)
+        self.save_button.pack(side=tk.RIGHT, padx=0)
 
         # Create a check button for custom libraries
         self.custom_lib_checkbutton = tk.Checkbutton(self.root, text="Use Custom Library", variable=self.custom_lib_var, bg=self.background_color, fg=self.text_color)
-        self.custom_lib_checkbutton.pack()
+        self.custom_lib_checkbutton.pack(pady=10)
 
 
 def main():
