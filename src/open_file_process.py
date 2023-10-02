@@ -5,6 +5,8 @@ from json import loads
 from xmltodict import parse
 
 from src.expression import Expression
+from src.file_crypt import decrypt
+from src.file_zip import unzip_file
 
 
 class FileProcess:
@@ -12,8 +14,13 @@ class FileProcess:
         "json": {"standard": loads, "custom": CustomJsonDecode()},
         "xml": {"standard": parse, "custom": CustomXMLDecode()},
     }
+    SCENARIO_TO_FUNC = {
+        "decrypt": decrypt,
+        "unzip-decrypt": lambda file_path, key: unzip_file(decrypt(file_path, key)),
+        "decrypt-unzip": lambda file_path, key: decrypt(unzip_file(file_path), key),
+    }
 
-    def __init__(self, file_path: str, use_custom_lib=False):
+    def __init__(self, file_path: str, use_custom_lib=False, open_scenario="", key=None):
         self.file_path = file_path
         self.file_name = file_path.split("/")[-1]
         self._use_custom_lib = use_custom_lib

@@ -1,9 +1,8 @@
 from tkinter import filedialog, messagebox, simpledialog
 import tkinter as tk
 
-from src.file_process import FileProcess
-from src.file_crypt import encrypt_and_get_key, decrypt
-from GUI.save_file_process import FormatChoiceDialog, OptionalParamChoiceDialog
+from src.open_file_process import FileProcess
+from GUI.process_dialog import SaveFormatChoiceDialog, SaveOptionalParamChoiceDialog, OpenOptionalParamChoiceDialog
 
 
 class RootWin:
@@ -55,31 +54,37 @@ class RootWin:
     def open_file_dialog(self):
         self.description_text.delete("1.0", tk.END)
         file_path = filedialog.askopenfilename(title="Select a File")
-        if file_path:
-            f_process = FileProcess(file_path, use_custom_lib=bool(self.custom_lib_var.get()))
-            expressions = f_process.decode()
-            self.expressions_data["Expressions"].clear()
+        if not file_path:
+            ...
+        option_dialog = OpenOptionalParamChoiceDialog(self.root)
+        self.root.wait_window(option_dialog.dialog)
+        open_scenario = option_dialog.result
+        key = None
+        if len(open_scenario) != 0:
+            key = simpledialog.askstring("Key", "Enter the key:", parent=self.root)
+        f_process = FileProcess(
+            file_path, use_custom_lib=bool(self.custom_lib_var.get()), open_scenario=open_scenario, key=key)
+        expressions = f_process.decode()
+        self.expressions_data["Expressions"].clear()
 
-            # Calculate and append description for each Expression to the Text widget
-            for ex in expressions:
-                ex.calculate()  # Calculate the result
-                description = ex.get_description()  # Get the description
-                self.description_text.insert(tk.END, description + "\n\n")  # Append to the Text widget
-                ex_dict_data = ex.get_dict()
-                for key, data in ex_dict_data.items():
-                    self.expressions_data["Expressions"][key] = data
+        # Calculate and append description for each Expression to the Text widget
+        for ex in expressions:
+            ex.calculate()  # Calculate the result
+            description = ex.get_description()  # Get the description
+            self.description_text.insert(tk.END, description + "\n\n")  # Append to the Text widget
+            ex_dict_data = ex.get_dict()
+            for key, data in ex_dict_data.items():
+                self.expressions_data["Expressions"][key] = data
 
-            print(self.expressions_data)
-
-            # print("Selected file:", file_path)
+        print(self.expressions_data)
 
     def save_file_dialog(self):
 
-        format_choice_dialog = FormatChoiceDialog(self.root)
+        format_choice_dialog = SaveFormatChoiceDialog(self.root)
         self.root.wait_window(format_choice_dialog.dialog)
         format_choice = format_choice_dialog.result
 
-        option_choice_dialog = OptionalParamChoiceDialog(self.root)
+        option_choice_dialog = SaveOptionalParamChoiceDialog(self.root)
         self.root.wait_window(option_choice_dialog.dialog)
         options = option_choice_dialog.result
         if len(options) == 0:
