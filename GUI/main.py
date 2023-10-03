@@ -4,6 +4,13 @@ import tkinter as tk
 from src.open_file_process import FileProcess
 from GUI.process_dialog import SaveFormatChoiceDialog, SaveOptionalParamChoiceDialog, OpenOptionalParamChoiceDialog
 
+from json import dumps
+import xml.etree.ElementTree as ET
+
+from CustomLibs.JSON.encoder import custom_json_encode
+from src.file_crypt import encrypt_and_get_key
+from src.file_zip import zip_file
+
 
 class RootWin:
     width = 400  # Increased the width
@@ -60,7 +67,7 @@ class RootWin:
         self.root.wait_window(option_dialog.dialog)
         open_scenario = option_dialog.result
         key = None
-        if len(open_scenario) != 0:
+        if len(open_scenario) != 0 and open_scenario != "unzip":
             key = simpledialog.askstring("Key", "Enter the key:", parent=self.root)
         f_process = FileProcess(
             file_path, use_custom_lib=bool(self.custom_lib_var.get()), open_scenario=open_scenario, key=key)
@@ -76,7 +83,7 @@ class RootWin:
             for key, data in ex_dict_data.items():
                 self.expressions_data["Expressions"][key] = data
 
-        print(self.expressions_data)
+        # print(self.expressions_data)
 
     def save_file_dialog(self):
 
@@ -95,12 +102,32 @@ class RootWin:
         file_path = filedialog.asksaveasfilename(title="Save File", defaultextension="")
         file_path += format_choice
 
+        # print(self.expressions_data)
 
-        print(file_path)
+        TYPE_TO_ENCODER = {
+            ".json": {"standard": dumps, "custom": custom_json_encode},
+            # ".xml": {"standard": parse, "custom": CustomXMLDecode()},
+        }
+        SCENARIO_TO_FUNC = {
+            "zip": zip_file,
+            "encrypt": encrypt_and_get_key,
+        }
 
+        with open(file_path, "w") as file:
+            file.write(TYPE_TO_ENCODER[format_choice]["standard"](self.expressions_data))
 
-        print(format_choice)
-        print(options)
+        # todo del file if zip
+
+        for option in options:
+            if option == "zip":
+                file_path = SCENARIO_TO_FUNC[option](file_path)
+                print(file_path)
+            elif option == "encrypt":
+                key = SCENARIO_TO_FUNC[option](file_path)
+                print(key)
+
+        # print(format_choice)
+        # print(options)
         return
 
         file_path = filedialog.asksaveasfilename(title="Save File", defaultextension="")

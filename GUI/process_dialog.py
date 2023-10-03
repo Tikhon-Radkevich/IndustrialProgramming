@@ -75,8 +75,9 @@ class SaveOptionalParamChoiceDialog(CustomDialog):
 class OpenOptionalParamChoiceDialog(CustomDialog):
     kwargs = dict(
         title="Option Choice",
-        geometry="190x185",
+        geometry="190x210",
         options=[
+            ("Unzip", "unzip"),
             ("Decrypt", "decrypt"),
             ("Unzip -> Decrypt", "unzip-decrypt"),
             ("Decrypt -> Unzip", "decrypt-unzip")
