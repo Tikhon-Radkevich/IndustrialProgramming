@@ -57,9 +57,6 @@ class OpenFileProcess:
         with open(file_in_cache, "r") as f:
             data = f.read()
 
-        # if len(self.open_scenario) != 0 and self.open_scenario != "decrypt":
-        #     os.remove(self.file_path)
-
         if self._use_custom_lib:
             file_decoder = self.TYPE_TO_DECODER[file_type]["custom"]
         else:
