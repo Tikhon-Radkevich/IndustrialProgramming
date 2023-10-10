@@ -3,7 +3,8 @@ import zipfile
 
 def zip_file(file_path: str):
     zip_file_name = file_path.split("/")[-1]
-    zip_file_path = f"{file_path.split('.')[0]}.zip"
+    zip_file_path = file_path.split(zip_file_name)[0]
+    zip_file_path = f"{zip_file_path}{zip_file_name.split('.')[0]}.zip"
     with zipfile.ZipFile(zip_file_path, "w") as zipf:
         zipf.write(file_path, arcname=zip_file_name)
     return zip_file_path
