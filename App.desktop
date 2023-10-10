@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=IP App
+Exec=/home/tikhon/PycharmProjects/IndustrialProgramming/rundocker.sh
+Icon=/home/tikhon/PycharmProjects/IndustrialProgramming/GUI/data/icon.png
+Terminal=false
+Categories=Utility;
