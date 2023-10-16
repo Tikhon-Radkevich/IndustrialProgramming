@@ -1,4 +1,4 @@
-class CustomJsonDecode:
+class CustomJsonDecoder:
     """ Custom JSON decoder to decode a JSON string into a Python dictionary. """
 
     def __init__(self):
@@ -65,26 +65,3 @@ class CustomJsonDecode:
                 self._idx += 1  # Skip the comma
         self._idx += 1  # Skip the closing square bracket
         return result
-
-
-def main():
-    # Example JSON string
-    # json_string = ('{"name": "John", "age": 30, "city": "New York", "is_student": false, "address": '
-    #                '{"street": "123 Main St", "zip": "10001"}}')
-
-    with open("../../data/Example.json", "r") as f:
-        json_string = f.read()
-
-    while "\n" in json_string:
-        json_string = json_string.replace("\n", "")
-    print(json_string)
-    # return
-    # Decode the JSON string using the custom decoder
-    decoder = CustomJsonDecode(json_string)
-    decoded_data = decoder.decode()
-    # Display the decoded data
-    print(decoded_data)
-
-
-if __name__ == "__main__":
-    main()

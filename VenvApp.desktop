@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.1
+Type=Application
+Name=TestApp
+Exec=/home/tikhon/PycharmProjects/IndustrialProgramming/runapp.sh
+Icon=/home/tikhon/PycharmProjects/IndustrialProgramming/GUI/data/icon.png
+Terminal=true
+Categories=Utility;

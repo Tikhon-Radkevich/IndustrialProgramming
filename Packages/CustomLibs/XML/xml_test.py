@@ -1,7 +1,7 @@
 import xmltodict
 
 # Read the XML file into a string
-with open("../../data/Example.xml", "r") as xml_file:
+with open("../../../data/Example.xml", "r") as xml_file:
     xml_data = xml_file.read()
 
 # Parse the XML data into a dictionary

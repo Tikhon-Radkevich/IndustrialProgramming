@@ -96,34 +96,9 @@ class RootWin:
         key = f_process.save(self.expressions_data)
 
         if key is not None:
+            print(key)
             # todo
-            pass
         return
-
-        file_path = filedialog.asksaveasfilename(title="Save File", defaultextension="")
-        if file_path:
-            format_choice = simpledialog.askstring("File Format", "Choose file format (json or xml):", parent=self.root)
-            if format_choice and format_choice.lower() in ["json", "xml"]:
-                format_choice = format_choice.lower()
-                options = simpledialog.askstring("Options", "Choose options (comma-separated):", parent=self.root)
-                if options:
-                    options_list = options.split(",")
-                    if "zip" in options_list:
-                        # Implement ZIP functionality here
-                        pass
-                    if "encrypt" in options_list:
-                        # Implement encryption functionality here
-                        pass
-                    # Save the file with chosen format and options
-                    with open(file_path, "w") as file:
-                        file.write(f"Format: {format_choice}\n")
-                        file.write(f"Options: {', '.join(options_list)}\n")
-                        file.write(self.description_text.get("1.0", tk.END))
-                    messagebox.showinfo("File Saved", "File saved successfully.")
-                else:
-                    messagebox.showwarning("Options", "No options selected.")
-            else:
-                messagebox.showwarning("File Format", "Invalid file format choice.")
 
     def show_project_info(self):
         messagebox.showinfo("Project Information", self.info_text)

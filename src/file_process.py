@@ -1,11 +1,8 @@
 import shutil
 from json import loads, dumps
 from xmltodict import parse
-import xml.etree.ElementTree as ET
 
-from CustomLibs.JSON.decoder import CustomJsonDecode
-from CustomLibs.JSON.encoder import custom_json_encode
-from CustomLibs.XML.decoder import CustomXMLDecode
+from Packages.CustomLibs import CustomJsonDecoder, CustomJsonEncoder, CustomXMLDecoder
 
 from src.expression import Expression
 from src.file_crypt import decrypt, encrypt_and_get_key
@@ -16,8 +13,8 @@ from config import CACHE_DIR
 
 class OpenFileProcess:
     TYPE_TO_DECODER = {
-        "json": {"standard": loads, "custom": CustomJsonDecode()},
-        "xml": {"standard": parse, "custom": CustomXMLDecode()},
+        "json": {"standard": loads, "custom": CustomJsonDecoder()},
+        "xml": {"standard": parse, "custom": CustomXMLDecoder()},
     }
     SCENARIO_TO_FUNC = {
         "unzip": unzip_file,
@@ -36,12 +33,13 @@ class OpenFileProcess:
 
     def decode(self) -> list[Expression]:
 
+        file_in_cache = f"{CACHE_DIR}/{self.file_name}"
+        if self.file_path != file_in_cache:
+            shutil.copy(self.file_path, file_in_cache)
+
         options = []
         if len(self.open_scenario) != 0:
             options = self.open_scenario.split("-") if "-" in self.open_scenario else [self.open_scenario]
-
-        file_in_cache = f"{CACHE_DIR}/{self.file_name}"
-        shutil.copy(self.file_path, file_in_cache)
 
         for option in options:
             if option == "unzip":
@@ -74,7 +72,7 @@ class OpenFileProcess:
 
 class SaveFileProcess:
     TYPE_TO_ENCODER = {
-        ".json": {"standard": dumps, "custom": custom_json_encode},
+        ".json": {"standard": dumps, "custom": CustomJsonEncoder()},
         # ".xml": {"standard": parse, "custom": CustomXMLDecode()},
     }
     SCENARIO_TO_FUNC = {
@@ -113,7 +111,8 @@ class SaveFileProcess:
                 key = self.SCENARIO_TO_FUNC[option](file_in_cache)
                 print(key)
 
-        shutil.copy(file_in_cache, self.file_path)
+        if self.file_path != file_in_cache:
+            shutil.copy(file_in_cache, self.file_path)
 
         return key
 
