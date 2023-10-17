@@ -1,5 +1,6 @@
 class CustomJsonEncoder:
-    def __init__(self): ...
+    def __init__(self):
+        ...
 
     def __call__(self, data):
         """ Custom JSON encoder to encode a Python dictionary as a JSON string. """

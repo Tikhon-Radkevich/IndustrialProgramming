@@ -1,5 +1,6 @@
 import os
 
 
-CACHE_DIR = os.path.expanduser("/home/tikhon/PycharmProjects/IndustrialProgramming/.cache")
-
+CACHE_DIR = "cache"
+EXAMPLE_FILES_PATH = "data/examples"
+WORKING_PATH = "data/working"

@@ -1,10 +1,12 @@
 import shutil
 from json import loads, dumps
 from xmltodict import parse
+from dicttoxml import dicttoxml
 
-from Packages.CustomLibs import CustomJsonDecoder, CustomJsonEncoder, CustomXMLDecoder
+from Packages.CustomLibs import CustomJsonDecoder, CustomJsonEncoder, CustomXMLDecoder, CustomXMLEncoder
 
-from src.expression import Expression
+from Packages import Expression
+from Packages import clear_cache_dir
 from src.file_crypt import decrypt, encrypt_and_get_key
 from src.file_zip import unzip_file, zip_file
 
@@ -54,6 +56,7 @@ class OpenFileProcess:
 
         with open(file_in_cache, "r") as f:
             data = f.read()
+        clear_cache_dir(CACHE_DIR)
 
         if self._use_custom_lib:
             file_decoder = self.TYPE_TO_DECODER[file_type]["custom"]
@@ -73,7 +76,7 @@ class OpenFileProcess:
 class SaveFileProcess:
     TYPE_TO_ENCODER = {
         ".json": {"standard": dumps, "custom": CustomJsonEncoder()},
-        # ".xml": {"standard": parse, "custom": CustomXMLDecode()},
+        ".xml": {"standard": lambda data: dicttoxml(data).decode(), "custom": CustomXMLEncoder()},
     }
     SCENARIO_TO_FUNC = {
         "zip": zip_file,
@@ -106,13 +109,12 @@ class SaveFileProcess:
             if option == "zip":
                 file_in_cache = self.SCENARIO_TO_FUNC[option](file_in_cache)
                 self.file_path = self.file_path.split(".")[0] + ".zip"
-                print(self.file_path)
             elif option == "encrypt":
                 key = self.SCENARIO_TO_FUNC[option](file_in_cache)
                 print(key)
 
         if self.file_path != file_in_cache:
             shutil.copy(file_in_cache, self.file_path)
-
+            clear_cache_dir(CACHE_DIR)
         return key
 

@@ -3,8 +3,10 @@ from time import sleep
 from tkinter import filedialog, messagebox, simpledialog
 import tkinter as tk
 
+from Packages import create_cache_dir, clear_cache_dir
 from src.file_process import OpenFileProcess, SaveFileProcess
 from GUI.process_dialog import SaveFormatChoiceDialog, SaveOptionalParamChoiceDialog, OpenOptionalParamChoiceDialog
+from config import EXAMPLE_FILES_PATH, CACHE_DIR, WORKING_PATH
 
 
 class RootWin:
@@ -55,7 +57,7 @@ class RootWin:
 
     def open_file_dialog(self):
         self.description_text.delete("1.0", tk.END)
-        file_path = filedialog.askopenfilename(title="Select a File")
+        file_path = filedialog.askopenfilename(title="Select a File", initialdir=EXAMPLE_FILES_PATH)
         if not file_path:
             ...
         option_dialog = OpenOptionalParamChoiceDialog(self.root)
@@ -87,7 +89,7 @@ class RootWin:
         self.root.wait_window(option_choice_dialog.dialog)
         options = option_choice_dialog.result
 
-        file_path = filedialog.asksaveasfilename(title="Save File", defaultextension="")
+        file_path = filedialog.asksaveasfilename(title="Save File", defaultextension="", initialdir=WORKING_PATH)
         file_path += format_choice
 
         use_custom_lib = bool(self.custom_lib_var.get())
@@ -137,9 +139,12 @@ def main():
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        print(e)
-        sleep(100)
+    ...
+    # try:
+    #     create_cache_dir(CACHE_DIR)
+    #     main()
+    # except Exception as e:
+    #     clear_cache_dir(CACHE_DIR)
+    #     print(e)
+    #     sleep(100)
 
