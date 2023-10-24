@@ -4,3 +4,4 @@ pycparser==2.21
 xmltodict==0.13.0
 fastapi~=0.103.2
 dicttoxml~=1.7.16
+pyperclip~=1.8.2
