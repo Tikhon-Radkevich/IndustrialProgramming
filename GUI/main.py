@@ -5,7 +5,8 @@ import tkinter as tk
 
 from Packages import create_cache_dir, clear_cache_dir
 from src.file_process import OpenFileProcess, SaveFileProcess
-from GUI.process_dialog import SaveFormatChoiceDialog, SaveOptionalParamChoiceDialog, OpenOptionalParamChoiceDialog
+from GUI.process_dialog import SaveFormatChoiceDialog, SaveOptionalParamChoiceDialog, OpenOptionalParamChoiceDialog, \
+    CopyKyeDialog
 from config import EXAMPLE_FILES_PATH, CACHE_DIR, WORKING_PATH
 
 
@@ -40,7 +41,8 @@ class RootWin:
         self._button_initialization()
 
         # Create a Text widget for displaying descriptions
-        self.description_text = tk.Text(self.root, wrap=tk.WORD, width=60, height=20, bg=self.background_color, fg=self.text_color)
+        self.description_text = tk.Text(self.root, wrap=tk.WORD, width=60, height=20, bg=self.background_color,
+                                        fg=self.text_color)
         self.description_text.pack(padx=20, pady=10, fill=tk.BOTH, expand=True)  # Fill the available space
 
         # Create a vertical scrollbar for the Text widget
@@ -98,8 +100,8 @@ class RootWin:
         key = f_process.save(self.expressions_data)
 
         if key is not None:
-            print(key)
-            # todo
+            copy_key_dialog = CopyKyeDialog(key, self.root)
+            self.root.wait_window(copy_key_dialog.dialog)
         return
 
     def show_project_info(self):
@@ -115,21 +117,25 @@ class RootWin:
 
     def _button_initialization(self):
 
-        self.info_button = tk.Button(self.root, text="Info", command=self.show_project_info, bg=self.button_bg,fg=self.button_fg)
+        self.info_button = tk.Button(self.root, text="Info", command=self.show_project_info, bg=self.button_bg,
+                                     fg=self.button_fg)
         self.info_button.pack(padx=10, pady=5, anchor="ne")
 
         # Create a frame for the buttons
         button_frame = tk.Frame(self.root)
         button_frame.pack(padx=0, pady=10)
 
-        self.open_button = tk.Button(button_frame, text="Open File", command=self.open_file_dialog, bg=self.button_bg, fg=self.button_fg)
+        self.open_button = tk.Button(button_frame, text="Open File", command=self.open_file_dialog, bg=self.button_bg,
+                                     fg=self.button_fg)
         self.open_button.pack(side=tk.LEFT, padx=0, pady=0)
 
-        self.save_button = tk.Button(button_frame, text="Save", command=self.save_file_dialog, bg=self.button_bg, fg=self.button_fg)
+        self.save_button = tk.Button(button_frame, text="Save", command=self.save_file_dialog, bg=self.button_bg,
+                                     fg=self.button_fg)
         self.save_button.pack(side=tk.RIGHT, padx=0)
 
         # Create a check button for custom libraries
-        self.custom_lib_checkbutton = tk.Checkbutton(self.root, text="Use Custom Library", variable=self.custom_lib_var, bg=self.background_color, fg=self.text_color)
+        self.custom_lib_checkbutton = tk.Checkbutton(self.root, text="Use Custom Library", variable=self.custom_lib_var,
+                                                     bg=self.background_color, fg=self.text_color)
         self.custom_lib_checkbutton.pack(pady=10)
 
 
@@ -147,4 +153,3 @@ if __name__ == "__main__":
     #     clear_cache_dir(CACHE_DIR)
     #     print(e)
     #     sleep(100)
-

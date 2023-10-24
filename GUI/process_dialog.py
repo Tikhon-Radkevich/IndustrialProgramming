@@ -1,8 +1,9 @@
 from tkinter import Toplevel, Label, Radiobutton, Button, StringVar
+import pyperclip
 
 
 class CustomDialog:
-    def __init__(self, parent, label, options, default_option, title, geometry):
+    def __init__(self, parent, label, options, default_option, title, geometry, confirm_button_text):
         self.parent = parent
         self.title = title
         self.geometry = geometry
@@ -30,11 +31,31 @@ class CustomDialog:
             button = Radiobutton(self.dialog, text=text, variable=self.selected_option, value=value)
             button.pack(padx=10, pady=5)
 
-        confirm_button = Button(self.dialog, text="Confirm", command=self.confirm_choice)
+        confirm_button = Button(self.dialog, text=confirm_button_text, command=self.__call__)
         confirm_button.pack(padx=10, pady=5)
 
-    def confirm_choice(self):
+    def __call__(self, *args, **kwargs):
         self.result = self.selected_option.get()
+        self.dialog.destroy()
+
+
+class CopyKyeDialog(CustomDialog):
+    kwargs = dict(
+        title="Copy Key",
+        geometry="500x120",
+        options=[],
+        default_option="",
+        label="Your key is: ",
+        confirm_button_text="Copy"
+    )
+
+    def __init__(self, key, parent):
+        self.kwargs["label"] += key
+        self.key = key
+        super().__init__(parent=parent, **self.kwargs)
+
+    def __call__(self, *args, **kwargs):
+        pyperclip.copy(self.key)
         self.dialog.destroy()
 
 
@@ -47,7 +68,8 @@ class SaveFormatChoiceDialog(CustomDialog):
             ("XML", ".xml")
         ],
         default_option="json",
-        label="Choose file format:"
+        label="Choose file format:",
+        confirm_button_text="Confirm"
     )
 
     def __init__(self, parent):
@@ -65,7 +87,8 @@ class SaveOptionalParamChoiceDialog(CustomDialog):
             ("Encrypt -> ZIP", "encrypt-zip")
         ],
         default_option="",
-        label="Choose extra parameter"
+        label="Choose extra parameter",
+        confirm_button_text="Confirm"
     )
 
     def __init__(self, parent):
@@ -83,7 +106,8 @@ class OpenOptionalParamChoiceDialog(CustomDialog):
             ("Decrypt -> Unzip", "decrypt-unzip")
         ],
         default_option="",
-        label="Choose extra parameter"
+        label="Choose extra parameter",
+        confirm_button_text="Confirm"
     )
 
     def __init__(self, parent):
