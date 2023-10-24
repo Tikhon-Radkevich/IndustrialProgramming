@@ -76,7 +76,10 @@ class OpenFileProcess:
 class SaveFileProcess:
     TYPE_TO_ENCODER = {
         ".json": {"standard": dumps, "custom": CustomJsonEncoder()},
-        ".xml": {"standard": lambda data: dicttoxml(data).decode(), "custom": CustomXMLEncoder()},
+        ".xml": {
+            "standard": lambda data: dicttoxml(obj=data, root=False, return_bytes=False, attr_type=False),
+            "custom": CustomXMLEncoder()
+        },
     }
     SCENARIO_TO_FUNC = {
         "zip": zip_file,
@@ -111,10 +114,9 @@ class SaveFileProcess:
                 self.file_path = self.file_path.split(".")[0] + ".zip"
             elif option == "encrypt":
                 key = self.SCENARIO_TO_FUNC[option](file_in_cache)
-                print(key)
+                key = key.decode("utf-8")
 
         if self.file_path != file_in_cache:
             shutil.copy(file_in_cache, self.file_path)
             clear_cache_dir(CACHE_DIR)
         return key
-

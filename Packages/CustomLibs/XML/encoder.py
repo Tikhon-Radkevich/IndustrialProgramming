@@ -2,7 +2,9 @@ class CustomXMLEncoder:
     def __init__(self):
         self.tabs = []
 
-    def __call__(self, data, root_name, level=0):
+    def __call__(self, data, root_name=None, level=0):
+        if root_name is None:
+            return self(data["Expressions"], root_name="Expressions")
         xml = "\t" * level + f"<{root_name}>\n"
         for key, value in data.items():
             if isinstance(value, dict):

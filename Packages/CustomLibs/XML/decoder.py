@@ -16,6 +16,14 @@ class CustomXMLDecoder:
             tag = data[data.find("<")+1:data.find(">")]
             list_data = data.split(tag)
             tag_data = list_data[1]
-            data = list_data[-1][1:-1]
+            data = list_data[-1][1:]
             result[tag] = self.file_decoder(tag_data[1:-2])
         return result
+
+
+if __name__ == "__main__":
+    with open("../../../data/working/cust.xml", "r") as f:
+        xml_data_str = f.read()
+    decoder = CustomXMLDecoder()
+    xml_dict = decoder(xml_data_str)
+    print(xml_dict)
