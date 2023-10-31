@@ -44,7 +44,7 @@ class CustomJsonDecoder:
             start = self._idx
             while self.json_str[self._idx].isdigit() or self.json_str[self._idx] in ['+', '-', '.', 'e', 'E']:
                 self._idx += 1
-            return self.json_str[start:self._idx]
+            return float(self.json_str[start:self._idx])
         elif self.json_str[self._idx] == "t":
             self._idx += 4  # Skip "true"
             return True
