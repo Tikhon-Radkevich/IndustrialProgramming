@@ -10,10 +10,12 @@ class CustomXMLEncoder:
             if isinstance(value, dict):
                 xml += self(value, key, level + 1)
             else:
+                if value is None:
+                    value = ""
                 xml += "\t" * (level + 1) + f"<{key}>\n"
                 xml += "\t" * (level + 2) + f"{value}\n"
                 xml += "\t" * (level + 1) + f"</{key}>\n"
-        xml += " " * level * 4 + f"</{root_name}>\n"
+        xml += "\t" * level + f"</{root_name}>\n"
         return xml
 
 

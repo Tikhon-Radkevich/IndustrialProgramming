@@ -9,7 +9,8 @@ class CustomXMLDecoder:
 
     def file_decoder(self, data: str):
         if "<" not in data:
-            value = None if "None" in data else data.strip()
+            data = data.strip()
+            value = None if len(data) == 0 else data
             return value
         result = {}
         while "<" in data:
