@@ -6,6 +6,11 @@ class Expression:
         self.converted_expression = None
         self.result = None
 
+    # reset custom ==
+    def __eq__(self, other):
+        return (self.title == other.title and self.expression == other.expression and
+                self.args == other.args and self.result == other.result)
+
     def calculate(self):
         converted_expression = self.expression
         for key, value in self.args.items():
