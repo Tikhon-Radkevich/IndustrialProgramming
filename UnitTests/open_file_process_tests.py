@@ -1,7 +1,5 @@
 import unittest
 
-import json
-
 from src.file_process import OpenFileProcess
 
 
@@ -25,19 +23,22 @@ class FileProcessUnitTest(unittest.TestCase):
         (test_xml_crypt_zip_path, "unzip-decrypt", test_xml_crypt_zip_key, xml_expression_result_path)
     )
 
-    def check_expressions_result(self, expressions, result_file_path):
-        with open(result_file_path, "r") as f:
-            result_data = f.read()
-            print("result", result_data)
-        for ex in expressions:
-            ex.calculate()
-            ex_dict_data = ex.get_dict()
-            print(json.dumps(ex_dict_data))
-            self.assertEqual(json.dumps(ex_dict_data), result_data)
+    def test_scenario_1(self):
+        self._test_scenario(0)
 
-    def test_open_file_process_with_custom_libs(self):
-        use_custom_libs = True
-        for file_path, open_scenario, key, result_file_path in self.file_scenario_key_result:
-            f_process = OpenFileProcess(file_path, use_custom_lib=use_custom_libs, open_scenario=open_scenario, key=key)
-            expressions = f_process.decode()
-            self.check_expressions_result(expressions, result_file_path)
+    def test_scenario_2(self):
+        self._test_scenario(1)
+
+    def test_scenario_3(self):
+        self._test_scenario(2)
+
+    def test_scenario_4(self):
+        self._test_scenario(3)
+
+    def _test_scenario(self, index):
+        file_path, open_scenario, key, result_file_path = self.file_scenario_key_result[index]
+        custom_f_process = OpenFileProcess(file_path, use_custom_lib=True, open_scenario=open_scenario, key=key)
+        std_f_process = OpenFileProcess(file_path, use_custom_lib=False, open_scenario=open_scenario, key=key)
+        custom_expressions = custom_f_process.decode()
+        std_expressions = std_f_process.decode()
+        self.assertEqual(custom_expressions, std_expressions)
