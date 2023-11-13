@@ -1,13 +1,15 @@
 FROM python:3.11
 
-RUN mkdir IP
+RUN mkdir -p /app
+RUN chmod 666 /app
 
-WORKDIR IP
+RUN mkdir -p /app/cache
+RUN chmod 666 /app/cache
+
+WORKDIR app
 
 COPY .. .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-
-CMD ["python", "main.py"]
-
+ENTRYPOINT ["python", "main.py"]
