@@ -22,10 +22,9 @@ class RootWin:
     button_bg = "#4caf50"  # Green button background
     button_fg = "white"  # White button text
 
+    # todo add Description
     info_text = """
-        Project Name: Your Project Name
-        University: Your University Name
-        Description: This is a project for the university.
+        Description...
         """
 
     def __init__(self):
