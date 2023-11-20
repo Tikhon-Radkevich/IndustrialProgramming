@@ -1,8 +1,16 @@
+import logging
+from logging.config import fileConfig
+
 from fastapi import FastAPI, UploadFile, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from config import CACHE_DIR
+
+
+fileConfig("logging.ini")
+logger = logging.getLogger(__name__)
+import toplevel
 
 
 app = FastAPI()
