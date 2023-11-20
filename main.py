@@ -1,3 +1,4 @@
+import subprocess
 import sys
 
 from Packages import create_cache_dir, clear_cache_dir
@@ -14,9 +15,12 @@ try:
         from GUI.main import main
         main()
     elif arg == "web":
-        ...
-        # from web.main import web_main_function
-        # web_main_function()
+        # todo script path?
+        script_path = "api/run_server.sh"
+        try:
+            subprocess.run(["bash", script_path], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error running the script: {e}")
     else:
         print("Invalid argument. Use 'gui' or 'web'")
 except Exception as e:
