@@ -72,14 +72,16 @@ class RootWin:
         expressions = f_process.decode()
         self.expressions_data["Expressions"].clear()
 
-        # Calculate and append description for each Expression to the Text widget
         for ex in expressions:
-            ex.calculate()  # Calculate the result
-            description = ex.get_description()  # Get the description
-            self.description_text.insert(tk.END, description + "\n\n")  # Append to the Text widget
-            ex_dict_data = ex.get_dict()
-            for key, data in ex_dict_data.items():
-                self.expressions_data["Expressions"][key] = data
+            try:
+                ex.calculate()
+                description = ex.get_description()
+                self.description_text.insert(tk.END, description + "\n\n")
+                ex_dict_data = ex.get_dict()
+                for key, data in ex_dict_data.items():
+                    self.expressions_data["Expressions"][key] = data
+            except Exception as e:
+                messagebox.showerror("Error", f"{e}")
 
     def save_file_dialog(self):
         format_choice_dialog = SaveFormatChoiceDialog(self.root)
@@ -139,16 +141,9 @@ class RootWin:
 
 
 def main():
-    r_win = RootWin()
-    r_win.run()
+    root = RootWin()
+    root.run()
 
 
 if __name__ == "__main__":
-    ...
-    # try:
-    #     create_cache_dir(CACHE_DIR)
-    #     main()
-    # except Exception as e:
-    #     clear_cache_dir(CACHE_DIR)
-    #     print(e)
-    #     sleep(100)
+    main()
