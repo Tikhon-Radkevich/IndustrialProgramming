@@ -8,7 +8,7 @@ from config import CACHE_DIR
 def main():
     try:
         if len(sys.argv) != 2:
-            print("Usage: python main.py [gui|web]")
+            print("Usage: python main.py [gui|web] > app.log 2>&1")
             sys.exit(1)
 
         arg = sys.argv[1]
