@@ -18,7 +18,7 @@ app.mount("/static", StaticFiles(directory="api/static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("choose_file.html", {"request": request})
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 def process_file(file_path, open_scenario, use_custom_lib=False, key=None):
