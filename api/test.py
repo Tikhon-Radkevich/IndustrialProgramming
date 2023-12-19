@@ -1,13 +1,14 @@
 from typing import Optional
+import json
 import os
 
 from fastapi import FastAPI, Request, Form, File, UploadFile
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
-import pyperclip
+from fastapi.responses import HTMLResponse, FileResponse
+# import pyperclip
 
 from src.file_process import OpenFileProcess, SaveFileProcess
-from config import EXAMPLE_FILES_PATH, CACHE_DIR, WORKING_PATH
+from config import CONTENT_TYPES, CACHE_DIR, WORKING_PATH
 
 app = FastAPI()
 templates = Jinja2Templates(directory="api/templates")
@@ -39,14 +40,26 @@ def process_file(file_path, open_scenario, use_custom_lib=False, key=None):
 
 @app.post("/download/")
 async def upload_file(
-    file_option: str = Form(...),
-    file_name: str = Form(...),
-    file_format: str = Form(...),
-    use_custom_libs: bool = Form(...),
-    expressions_data: str = Form(...)
+        file_option: str = Form(...),
+        file_name: str = Form(...),
+        file_extension: str = Form(...),
+        use_custom_libs: bool = Form(...),
+        expressions_data: str = Form(...)
 ):
-    print(expressions_data)
-    return "help"
+    data = json.loads(expressions_data)
+    file_content = json.dumps(data)
+    file_name_with_extension = f"{file_name}{file_extension}"
+    file_path = f"{CACHE_DIR}/{file_name_with_extension}"
+    with open(file_path, "w", encoding="utf-8") as file:
+        file.write(file_content)
+
+    content_type = CONTENT_TYPES.get(file_extension)
+
+    return FileResponse(
+        path=file_path,
+        filename=file_name_with_extension,
+        media_type=content_type
+    )
 
 
 @app.post("/uploadfile/")
