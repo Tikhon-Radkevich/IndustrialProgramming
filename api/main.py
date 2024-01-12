@@ -40,6 +40,29 @@ def process_file(file_path, open_scenario, use_custom_lib=False, key=None):
     return message, expressions_data
 
 
+# @app.post("/download/")
+# async def upload_file(
+#         file_option: str = Form(...),
+#         file_name: str = Form(...),
+#         file_extension: str = Form(...),
+#         use_custom_libs: bool = Form(...),
+#         expressions_data: str = Form(...)
+# ):
+#     data = json.loads(expressions_data)
+#     file_content = json.dumps(data)
+#     file_name_with_extension = f"{file_name}{file_extension}"
+#     file_path = f"{CACHE_DIR}/{file_name_with_extension}"
+#     with open(file_path, "w", encoding="utf-8") as file:
+#         file.write(file_content)
+#
+#     content_type = CONTENT_TYPES.get(file_extension)
+#
+#     return FileResponse(
+#         path=file_path,
+#         filename=file_name_with_extension,
+#         media_type=content_type
+#     )
+
 @app.post("/download/")
 async def upload_file(
         file_option: str = Form(...),
@@ -55,12 +78,27 @@ async def upload_file(
     with open(file_path, "w", encoding="utf-8") as file:
         file.write(file_content)
 
-    content_type = CONTENT_TYPES.get(file_extension)
+    f_process = OpenFileProcess(file_path)
+    expressions = f_process.decode()
+
+    expressions_data = {"Expressions": {}}
+
+    for ex in expressions:
+        ex.calculate()
+        ex_dict_data = ex.get_dict()
+        for key, data in ex_dict_data.items():
+            expressions_data["Expressions"][key] = data
+
+    f_process = SaveFileProcess(file_option, file_path, file_extension, use_custom_libs)
+    key = f_process.save(expressions_data, False)
+
+    if "zip" in file_option:
+        file_path = "/".join(file_path.split("/")[:-1]) + f"/{file_name}.zip"
+        file_name_with_extension = file_name + ".zip"
 
     return FileResponse(
         path=file_path,
         filename=file_name_with_extension,
-        media_type=content_type
     )
 
 
