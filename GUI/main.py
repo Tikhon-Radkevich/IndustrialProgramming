@@ -8,27 +8,26 @@ from config import EXAMPLE_FILES_PATH, CACHE_DIR, WORKING_PATH
 
 
 class RootWin:
-    width = 400  # Increased the width
-    height = 600  # Increased the height
-    min_width = 300  # Increased the minimum width
-    min_height = 400  # Increased the minimum height
+    width = 400
+    height = 600
+    min_width = 300
+    min_height = 400
 
-    # Define a color theme
-    background_color = "#f0f0f0"  # Light gray background
-    text_color = "black"  # Black text
-    button_bg = "#4caf50"  # Green button background
-    button_fg = "white"  # White button text
+    background_color = "#f0f0f0"
+    text_color = "black"
+    button_bg = "#4caf50"
+    button_fg = "white"
 
-    # todo add Description
     info_text = """
-        Description...
+        Application to extract expressions data 
+        from files with extension: json, xml.
+        With option zip and crypt.
         """
 
     def __init__(self):
         self.root = tk.Tk()
         self._win_initialization()
 
-        # buttons
         self.info_button = None
         self.open_button = None
         self.save_button = None
@@ -36,16 +35,13 @@ class RootWin:
         self.custom_lib_var = tk.IntVar()
         self._button_initialization()
 
-        # Create a Text widget for displaying descriptions
         self.description_text = tk.Text(self.root, wrap=tk.WORD, width=60, height=20, bg=self.background_color,
                                         fg=self.text_color)
-        self.description_text.pack(padx=20, pady=10, fill=tk.BOTH, expand=True)  # Fill the available space
+        self.description_text.pack(padx=20, pady=10, fill=tk.BOTH, expand=True)
 
-        # Create a vertical scrollbar for the Text widget
         self.scrollbar = tk.Scrollbar(self.root, command=self.description_text.yview)
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        # Configure the Text widget to work with the scrollbar
         self.description_text.config(yscrollcommand=self.scrollbar.set)
         self.expressions_data: dict = {"Expressions": {}}
 
@@ -111,7 +107,7 @@ class RootWin:
         x = (self.root.winfo_screenwidth() // 2) - (self.width // 2)
         y = (self.root.winfo_screenheight() // 2) - (self.height // 2)
         self.root.geometry(f"{self.width}x{self.height}+{x}+{y}")
-        self.root.configure(bg=self.background_color)  # Set the background color
+        self.root.configure(bg=self.background_color)
 
     def _button_initialization(self):
 
@@ -119,7 +115,6 @@ class RootWin:
                                      fg=self.button_fg)
         self.info_button.pack(padx=10, pady=5, anchor="ne")
 
-        # Create a frame for the buttons
         button_frame = tk.Frame(self.root)
         button_frame.pack(padx=0, pady=10)
 
@@ -131,7 +126,6 @@ class RootWin:
                                      fg=self.button_fg)
         self.save_button.pack(side=tk.RIGHT, padx=0)
 
-        # Create a check button for custom libraries
         self.custom_lib_checkbutton = tk.Checkbutton(self.root, text="Use Custom Library", variable=self.custom_lib_var,
                                                      bg=self.background_color, fg=self.text_color)
         self.custom_lib_checkbutton.pack(pady=10)
