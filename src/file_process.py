@@ -92,7 +92,7 @@ class SaveFileProcess:
         self.format_choice = format_choice
         self.use_custom_lib = use_custom_lib
 
-    def save(self, expressions_data):
+    def save(self, expressions_data, is_clear_cache=True):
         if len(self.options) != 0:
             self.options = self.options.split("-") if "-" in self.options else [self.options]
 
@@ -116,7 +116,7 @@ class SaveFileProcess:
                 key = self.SCENARIO_TO_FUNC[option](file_in_cache)
                 key = key.decode("utf-8")
 
-        if self.file_path != file_in_cache:
+        if self.file_path != file_in_cache and is_clear_cache:
             shutil.copy(file_in_cache, self.file_path)
             clear_cache_dir(CACHE_DIR)
         return key
