@@ -39,6 +39,3 @@ class PackagesUnitTest(unittest.TestCase):
         encoder = CustomXMLEncoder()
         self.assertEqual(re.sub(r'[\t\n]', '', encoder(data_dict)), data_xml)
 
-    def test_expression(self): ...
-    # todo test for expressions
-
