@@ -35,7 +35,6 @@ def test_file_uploading(link, file_path, file_option, crypt_key):
         sleep(10)
 
     finally:
-        # Close the browser window
         driver.quit()
 
 
